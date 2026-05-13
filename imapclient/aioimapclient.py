@@ -233,6 +233,7 @@ class AsyncIMAPClient:
         stream: bool = False,
         ssl_context: Optional[ssl_lib.SSLContext] = None,
         timeout: Optional[float] = None,
+        sock=None,
     ):
         if stream:
             if port is not None:
@@ -265,6 +266,7 @@ class AsyncIMAPClient:
         self._starttls_done = False
         self._cached_capabilities = None
         self._idle_tag = None
+        self._sock = sock
 
         self._imap = self._create_IMAP4()
 
@@ -306,9 +308,10 @@ class AsyncIMAPClient:
                 self.port,
                 ssl_context=ssl_context,
                 timeout=connect_timeout,
+                sock=self._sock,
             )
         else:
-            imap = aiolib.IMAP4(self.host, self.port, timeout=connect_timeout)
+            imap = aiolib.IMAP4(self.host, self.port, timeout=connect_timeout, sock=self._sock)
 
         return imap
 
