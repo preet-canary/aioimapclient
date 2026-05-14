@@ -266,7 +266,7 @@ class AsyncIMAPClient:
         self._starttls_done = False
         self._cached_capabilities = None
         self._idle_tag = None
-        self._sock = sock
+        self._injected_sock = sock
 
         self._imap = self._create_IMAP4()
 
@@ -308,7 +308,7 @@ class AsyncIMAPClient:
                 self.port,
                 ssl_context=ssl_context,
                 timeout=connect_timeout,
-                sock=self._sock,
+                sock=self._injected_sock,
             )
         else:
             imap = aiolib.IMAP4(self.host, self.port, timeout=connect_timeout, sock=self._sock)
