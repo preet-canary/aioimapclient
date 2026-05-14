@@ -295,6 +295,8 @@ class AsyncIMAPClient:
         connect_timeout = getattr(self._timeout, "connect", None)
         read_timeout = getattr(self._timeout, "read", None)
 
+        extra = {"sock": self._injected_sock} if self._injected_sock is not None else {}
+
         if self.stream:
             imap = aiolib.IMAP4_stream(self.host)
         elif self.ssl:
@@ -308,10 +310,10 @@ class AsyncIMAPClient:
                 self.port,
                 ssl_context=ssl_context,
                 timeout=connect_timeout,
-                sock=self._injected_sock,
+                **extra,
             )
         else:
-            imap = aiolib.IMAP4(self.host, self.port, timeout=connect_timeout, sock=self._sock)
+            imap = aiolib.IMAP4(self.host, self.port, timeout=connect_timeout, **extra)
 
         return imap
 
